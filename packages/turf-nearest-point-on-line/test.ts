@@ -398,6 +398,37 @@ test("turf-nearest-point-on-line -- multifeature index", (t) => {
   t.end();
 });
 
+test("turf-nearest-point-on-line -- issue 2753 multifeature location", (t) => {
+  const multiLine = multiLineString([
+    [
+      [-122.3125, 47.6632],
+      [-122.3102, 47.6646],
+    ],
+    [
+      [-122.3116, 47.6623],
+      [-122.3091, 47.6636],
+    ],
+  ]);
+
+  const ptA = point([-122.3106, 47.6638], { name: "A" });
+  const ptB = point([-122.3102, 47.6634], { name: "B" });
+
+  const nearestToA = nearestPointOnLine(multiLine, ptA, { units: "meters" });
+  const nearestToB = nearestPointOnLine(multiLine, ptB, { units: "meters" });
+
+  t.equal(
+    Number(nearestToA.properties.multiFeatureLocation.toFixed(6)),
+    150.293316,
+    "nearestToA multiFeatureLocation"
+  );
+  t.equal(
+    Number(nearestToB.properties.multiFeatureLocation.toFixed(6)),
+    157.736676,
+    "nearestToB multiFeatureLocation"
+  );
+  t.end();
+});
+
 test("turf-nearest-point-on-line -- issue 1514", (t) => {
   const pt = point([-40.01, 56]);
   const line = lineString([
